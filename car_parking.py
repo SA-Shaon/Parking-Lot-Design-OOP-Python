@@ -17,6 +17,14 @@ Classes:
         add car
         remove 
         show car
+
+Note:
+     __repr__  = formal string, not readable
+    str(__repr__) = readable formate string
+
+    another way to readable string return 
+    def __str__(self):
+        return f"{self.license}, {self.model}, {self.color}
 """
 
 
@@ -30,31 +38,19 @@ class Car:
         return f"{self.license}, {self.model}, {self.color}"
 
 
-"""
-    __repr__  = formal string, not readable
-    str(__repr__) = readable formate string
-
-    another way to readable string return 
-    def __str__(self):
-        return f"{self.license}, {self.model}, {self.color}
-"""
-
-
 class Garage:
     def __init__(self):
         self.car_added = []
         self.spot = 10
         self.car_infos = {}
-        self.bill = 0
-        self.ticket = []
 
     def spots_available(self):
-        return self.spot
+        return f"Total sposts available {self.spot}"
 
     def add_car_to_garage(self, car):
         self.spot_name = ['A1', 'B1', 'C1', 'D1',
                           'E1', 'F1', 'G1', 'H1', 'I1', 'J1']
-        if self.spots_available() > 0:
+        if self.spot > 0:
             user_data = str(car).split(', ')
             self.spot -= 1
             self.car_added.append(user_data)
@@ -67,10 +63,9 @@ class Garage:
                 self.car_infos['License'].append(val[0])
                 self.car_infos['Model'].append(val[1])
                 self.car_infos['Color'].append(val[2])
-
             print(f"Successfully Parked!!! Your Ticket {ticket}")
         else:
-            print("No Spots Available!!")
+            print("No Spot Available!!")
 
     def unpark(self, ticket, hours):
         past_spot_len = len(self.car_infos['Tickets'])
@@ -89,9 +84,45 @@ class Garage:
                     self.car_infos['Model'].pop(i)
                     self.car_infos['Color'].pop(i)
                     self.spot += 1
+            if hours > 30:
+                print(f"Total Bill = ${hours*5+100}")
+            else:
+                print(f"Total Bill = ${hours*5}")
+
+    def total_cars_in_garage(self):
+        for i, val in self.car_infos.items():
+            print(i, val)
 
 
 my_garage = Garage()
-my_car = Car('4568DM', 'Audi', 'Black')
-my_garage.add_car_to_garage(my_car)
-my_garage.unpark('A14568DM', 2)
+print("*************************WELCOME TO OUR PARKING SYSTEM*************************")
+
+while True:
+    print("What do you want?")
+    print("1. Park your car \n2. Check Available Space \n3. Unpark your car\n4. Total Cars in Garage ")
+    user_choice = int(input("Enter your choice : "))
+    if user_choice == 1:
+        car_license = input("Enter your car license : ")
+        car_model = input("Enter your car model : ")
+        car_color = input("Enter your car color : ")
+        user_car = Car(car_license, car_model, car_color)
+        my_garage.add_car_to_garage(user_car)
+        print()
+    elif user_choice == 2:
+        print(my_garage.spots_available())
+        print()
+    elif user_choice == 3:
+        ticket = input("Enter your ticket number : ")
+        hours = int(input("Enter hours : "))
+        if my_garage.spot == 10:
+            print("No car available in Garage.")
+            print()
+            continue
+        else:
+            my_garage.unpark(ticket, hours)
+        print()
+    elif user_choice == 4:
+        my_garage.total_cars_in_garage()
+        print()
+    else:
+        break
